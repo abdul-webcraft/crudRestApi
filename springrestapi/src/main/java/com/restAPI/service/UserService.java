@@ -1,23 +1,29 @@
 package com.restAPI.service;
 
-import com.restAPI.dto.UserDTO;
-import com.restAPI.model.User;
+import com.restAPI.dto.UserRequest;
+import com.restAPI.exception.BadRequestException;
+import com.restAPI.exception.ResourceNotFoundException;
+import com.restAPI.exception.ServiceLogicException;
+import com.restAPI.responseModel.ApiResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.util.List;
-
+@Service
 public interface UserService {
-    public User createUser(User user);
 
-    public User updateUser(Integer id,User user);
+   ResponseEntity<ApiResponse<?>> createUser(UserRequest request)throws BadRequestException, ServiceLogicException;
 
-    public User getUserById(Integer id);
+    ResponseEntity<ApiResponse<?>> updateUser(int id,UserRequest request) throws BadRequestException,ServiceLogicException, ResourceNotFoundException;
 
-    public UserDTO getUserByName(String name);
+    ResponseEntity<ApiResponse<?>> getUserById(int id) throws ServiceLogicException, ResourceNotFoundException;
 
-    public List<UserDTO> getAllUser();
+    ResponseEntity<ApiResponse<?>> getUserByName(String name) throws BadRequestException,ServiceLogicException, ResourceNotFoundException;
 
-    public List<User> getUsers();
+    ResponseEntity<ApiResponse<?>> getAllUser() throws ServiceLogicException, ResourceNotFoundException;
 
-    public String deleteUser(Integer id);
+    ResponseEntity<ApiResponse<?>> getUsers() throws ServiceLogicException, ResourceNotFoundException;
+
+    ResponseEntity<ApiResponse<?>> deleteUser(int id) throws ServiceLogicException, ResourceNotFoundException;
 
 }
