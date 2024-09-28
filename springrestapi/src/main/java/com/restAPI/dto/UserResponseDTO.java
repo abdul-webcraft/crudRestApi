@@ -2,16 +2,21 @@ package com.restAPI.dto;
 
 import lombok.*;
 
-@Data
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponse {
+@ToString
+@Builder
+public class UserResponseDTO {
 
     private int id;
     private String name;
     private String email;
     private String password;
-    private String address;
+    private List<AddressResponse> addresses;
+
+
 }

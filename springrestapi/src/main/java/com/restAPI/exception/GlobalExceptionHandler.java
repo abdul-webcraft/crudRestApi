@@ -1,13 +1,11 @@
 package com.restAPI.exception;
 
-import com.restAPI.responseModel.ApiResponse;
 import com.restAPI.responseModel.ApiResponseStatus;
 import com.restAPI.responseModel.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -25,6 +23,14 @@ public class GlobalExceptionHandler {
         log.error("Resource not found: {}", ex.getMessage());
         ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND.name(), ApiResponseStatus.FAIL.name(), ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UniqueConstraintException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<ErrorResponse> handleUniqueConstraintException(UniqueConstraintException ex) {
+        log.error("Unique Key Constraint: {}", ex.getMessage());
+        ErrorResponse response = new ErrorResponse(HttpStatus.CONFLICT.name(), ApiResponseStatus.FAIL.name(), ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(BadRequestException.class)
@@ -45,10 +51,8 @@ public class GlobalExceptionHandler {
         log.error("Validation error occurred: {}", ex.getMessage());
         List<String> errorMessage = new ArrayList<>();
 
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
-            errorMessage.add(error.getDefaultMessage());
-        });
-        return ResponseEntity.badRequest().body(new ErrorResponse(HttpStatus.BAD_REQUEST.name(), ApiResponseStatus.FAIL.name(),errorMessage.toString()));
+        ex.getBindingResult().getFieldErrors().forEach(error -> errorMessage.add(error.getDefaultMessage()));
+        return ResponseEntity.badRequest().body(new ErrorResponse(HttpStatus.BAD_REQUEST.name(), "Invalid Input",errorMessage.toString()));
     }
 
     @ExceptionHandler(Exception.class)
