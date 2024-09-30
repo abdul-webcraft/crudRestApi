@@ -25,6 +25,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth->auth.requestMatchers("/api/users","/api/user/**","/api/products","/api/product/**","/api/address").permitAll()
                         .anyRequest().authenticated()).httpBasic(Customizer.withDefaults());
         return http.build();
+
     }
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
